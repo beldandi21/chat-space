@@ -1,0 +1,18 @@
+* {
+  box-sizing: border-box;
+}
+.wrapper {
+  width: 100vw;
+  height: 500vh;
+  border: 1px solid #253141;
+
+  &__sidebar {
+    width: 300px;
+    background-color: #253141;
+    float: left;
+}
+  &__mainchat {
+    width: calc(100vw - 300px);
+    background-color: #ffffff;
+}
+}
