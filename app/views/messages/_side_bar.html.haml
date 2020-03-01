@@ -1,1 +1,31 @@
-<サイドバー>
+.sidebar
+  .header
+    .header__box
+      %p.header__box__user-name
+        = current_user.name
+      %ul.header__box__menu
+        %li.header__box__menu__new-group
+          = link_to "#" do
+            = icon('fas', 'edit')
+        
+        %li.header__box__menu__edit-user
+        = link_to edit_user_path(current_user.id) do
+          = icon('fas', 'cog')
+        
+
+  .groups
+    = link_to "#" , class: "group" do
+      %p.group__group-name
+        TECH
+      %p.group__group-message
+        まだメッセージはありません
+    = link_to "#" , class: "group" do
+      %p.group__group-name
+        ACADEMIC
+      %p.group__group-message
+        まだメッセージはありません
+    = link_to "#" , class: "group" do
+      %p.group__group-name
+        CODE
+      %p.group__group-message
+        まだメッセージはありません 
