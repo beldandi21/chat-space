@@ -1,33 +1,62 @@
-$('#user-search-field').on('keyup', function(e){
-  var input = $("#user-search-field").val();
+$(function() {
+  function addUser(user) {
+    let html = `
+      <div class="chat-group-user clearfix">
+        <p class="chat-group-user__name">${user.name}</p>
+        <div class="user-search-add chat-group-user__btn chat-group-user__btn--add" data-user-id="${user.id}" data-user-name="${user.name}">追加</div>
+      </div>
+    `;
+    $("#user-search-result").append(html);
 
-  $.ajax({
-      type: 'GET',                // HTTPメソッドはGETで
-      url:  '/users',             // /usersのURLに (これによりusersコントローラのindexアクションが起動)
-      data: { keyword: input},    // keyword: inputを送信する
-      dataType: 'json'            // サーバから値を返す際はjsonである
-  })
+  }
 
-  .done(function(users){                // usersにjson形式のuser変数が代入される。複数形なので配列型で入ってくる
+  function addNoUser() {
+    let html = `
+      <div class="chat-group-user clearfix">
+        <p class="chat-group-user__name">ユーザーが見つかりません</p>
+      </div>
+    `;
+    $("#user-search-result").append(html);
+  }
 
-      if (input.length === 0) {         // フォームの文字列長さが0であれば、インクリメンタルサーチ結果を表示しないようにする
-          $('#user-search-result').empty();
-        }
+  $("#user-search-field").on("keyup", function() {
+    let input = $("#user-search-field").val();
+    $.ajax({
+      type: "GET",
+      url: "/users",
+      data: { keyword: input },
+      dataType: "json"
+    })
+      .done(function(users) {
+        $("#user-search-result").empty();
 
-      else if (input.length !== 0){     // 値が等しくないもしくは型が等しくなければtrueを返す。
-          $('#user-search-result').empty();
-          users.forEach(function(user){ // users情報をひとつずつとりだしてuserに代入
-              appendUser(user)
+        if (users.length !== 0) {
+          users.forEach(function(user) {
+            addUser(user);
           });
-      }
-
-      else {
-          $('#user-search-result').empty(); // ユーザーが見つからなければ「見つからない」を返す。
-          appendErrMsgToHTML("一致するユーザーが見つかりません");
-      }
-  })
-
-  .fail(function() {
-      alert('ユーザー検索に失敗しました');
+        } else if (input.length == 0) {
+          return false;
+        } else {
+          addNoUser();
+        }
+      })
+      .fail(function() {
+        alert("通信エラーです。ユーザーが表示できません。");
+      });
+  });
+  $(document).on("click", ".chat-group-user__btn--add", function() {
+    console.log
+    const userName = $(this).attr("data-user-name");
+    const userId = $(this).attr("data-user-id");
+    $(this)
+      .parent()
+      .remove();
+    addDeleteUser(userName, userId);
+    addMember(userId);
+  });
+  $(document).on("click", ".chat-group-user__btn--remove", function() {
+    $(this)
+      .parent()
+      .remove();
   });
 });
